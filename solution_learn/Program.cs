@@ -1,7 +1,7 @@
 using httpClient;
 using Microsoft.OpenApi.Models;
+using solution_learn.Configuration.Middlewares;
 using solution_learn.Services;
-using Swashbuckle.AspNetCore.SwaggerGen;
 using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -24,11 +24,18 @@ builder.Services.AddSwaggerGen(options =>
     var xmlFilePath = Path.Combine(AppContext.BaseDirectory, xmlFileName);
     options.IncludeXmlComments(xmlFilePath);
 
-    /// добавляем
+    /// добавляем 
     options.OperationFilter<HeaderOperationFilter>();
 });
 
 var app = builder.Build();
+
+///обращение к версии сброки
+app.Map("/version", builder => builder.UseMiddleware<VersionMiddleware>());
+
+/// логирование запроса
+app.UseMiddleware<RequestLoggingMiddleWare>();
+
 ///Swagger Midlleware
 app.UseSwagger();
 /// добавление страницы https://localhost:7119/swagger/index.html
@@ -42,18 +49,3 @@ app.UseEndpoints(endpoints =>
 });
 
 app.Run();
-public class HeaderOperationFilter : IOperationFilter
-{
-    public void Apply(OpenApiOperation operation, OperationFilterContext context)
-    {
-        //context.ApiDescription = "v1/api/stocks/{id}";
-        operation.Parameters ??= new List<OpenApiParameter>();
-        operation.Parameters.Add(new OpenApiParameter
-        {
-            In = ParameterLocation.Header,
-            Name = "our-header",
-            Required=false,
-            Schema=new OpenApiSchema { Type="string"}
-        });
-    }
-}
