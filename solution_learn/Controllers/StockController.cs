@@ -28,6 +28,8 @@ namespace solution_learn.Controllers
     }
     [ApiController]
     [Route("v1/api/stocks")]
+    ///возвращение определенного типа
+    [Produces("application/json")]
     public class StockController:ControllerBase
     {
         private readonly IStockSetvice _stockSetvice;
@@ -35,13 +37,17 @@ namespace solution_learn.Controllers
         {
             _stockSetvice = stockSetvice;
         }
+        //Task<ActionResult<List<StockItem>>>
         [HttpGet]
-        public async Task<ActionResult<List<StockItem>>> GetAll(CancellationToken token)
+        [ProducesResponseType(typeof(List<StockItem>), StatusCodes.Status200OK )]
+        public async Task<ActionResult> GetAll(CancellationToken token)
         {
             var stockItems = await _stockSetvice.GetAll(token);
             return Ok(stockItems);
         }
         [HttpGet(template:"{id}")]
+        [ProducesResponseType(typeof(StockItem), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<ActionResult<StockItem>> GetById(long id,CancellationToken token)
         {
             var stockItems = await _stockSetvice.GetById(id,token);
