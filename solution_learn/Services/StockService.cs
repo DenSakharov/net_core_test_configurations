@@ -16,6 +16,12 @@ class StockService : IStockSetvice
         var stockItem = StockItems.FirstOrDefault(x => x.ItemId == itemId);
         return Task.FromResult(stockItem);
     }
+    /// <summary>
+    /// Добавляет Stock Item
+    /// </summary>
+    /// <param name="stockItem"></param>
+    /// <param name="token"></param>
+    /// <returns></returns>
     public Task<StockItem> Add(StockItemCreationModel stockItem, CancellationToken token)
     {
         var itemId = StockItems.Max(x => x.ItemId) + 1;

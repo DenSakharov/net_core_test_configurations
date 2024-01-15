@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using solution_learn.Services;
+using Swashbuckle.AspNetCore.Annotations;
 
 namespace solution_learn.Controllers
 {
@@ -56,8 +57,14 @@ namespace solution_learn.Controllers
                 return NotFound();
             }
             return Ok(stockItems);
-        }
+        }/// <summary>
+         /// Добавляет Stock Item
+         /// </summary>
+         /// <param name="model"></param>
+         /// <param name="token"></param>
+         /// <returns></returns>
         [HttpPost]
+        //[SwaggerResponse()]
         public async Task<ActionResult<StockItem>> Add(StockItemPostModel model,CancellationToken token)
         {
             var createdStockItem=await _stockSetvice.Add(new StockItemCreationModel
