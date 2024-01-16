@@ -1,0 +1,19 @@
+syntax="proto3";
+option csharp_namespace="gRPC";
+package StockApi;
+
+service StockApiGrpc{
+    rpc GetAllStockItems(GetAllStockItemsRequest) returns (GetAllStockItemsResponce);
+}
+        
+message GetAllStockItemsRequest{
+            
+}
+message GetAllStockItemsResponce{
+    repeated GetAllStockItemsResponceUnit stocks=1;
+}
+message GetAllStockItemsResponceUnit{
+    int64 item_id=1;
+    string item_name=2;
+    int32 quantity=3;
+}

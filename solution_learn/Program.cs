@@ -7,6 +7,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddSingleton<IStockSetvice, StockService>();
 
+builder.Services.AddGrpc();
+
 ///как позволять клиентам интегрироваться с нашей апи
 //builder.Services.AddHttpClient<IStockHttpClient,StockHttpClient>();
 
@@ -27,6 +29,7 @@ app.UseRouting();
 
 app.UseEndpoints(endpoints =>
 {
+    endpoints.MapGrpcService<StockGrpcService>();
     endpoints.MapControllers();
 });
 
