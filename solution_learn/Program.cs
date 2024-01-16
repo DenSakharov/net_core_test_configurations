@@ -1,12 +1,9 @@
 using httpClient;
-using Microsoft.OpenApi.Models;
-using solution_learn.Configuration.Middlewares;
+using solution_learn.Infrostructure.Middlewares;
 using solution_learn.Services;
-using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddControllers();
 
 builder.Services.AddSingleton<IStockSetvice, StockService>();
 
@@ -14,7 +11,9 @@ builder.Services.AddSingleton<IStockSetvice, StockService>();
 //builder.Services.AddHttpClient<IStockHttpClient,StockHttpClient>();
 
 /// добавление конфигурации в отдельный класс , переиспользование middleware
-builder.Host.AddInfrostructre();
+builder.Host.AddInfrostructre()
+    // сервис добавлени€ контроллеров с глобальным фильтром исключени€
+    .AddHttp();
 
 var app = builder.Build();
 
@@ -32,48 +31,3 @@ app.UseEndpoints(endpoints =>
 });
 
 app.Run();
-
-public class SwaggerStartupFilter : IStartupFilter
-{
-    public Action<IApplicationBuilder> Configure(Action<IApplicationBuilder> next)
-    {
-        return app =>
-        {
-            ///Swagger Midlleware
-            app.UseSwagger();
-            /// добавление страницы https://localhost:7119/swagger/index.html
-            app.UseSwaggerUI();
-
-            //соблюдение последовательностей middleware
-            next(app);
-        };
-    }
-}
-
-public static class HostBuilderExtentions
-{
-    public static IHostBuilder AddInfrostructre(this IHostBuilder builder)
-    {
-        builder.ConfigureServices(services =>
-        {
-            /// возможность работы с middleware
-            services.AddSingleton<IStartupFilter, SwaggerStartupFilter>();
-
-            services.AddSwaggerGen(options =>
-            {
-                options.SwaggerDoc("v1", new OpenApiInfo { Title = "API", Version = "v1" });
-                ///сбор полного пространства имен
-                options.CustomSchemaIds(x => x.FullName);
-
-                ///добавл€ем путь к xml docs
-                var xmlFileName = Assembly.GetExecutingAssembly().GetName().Name + ".xml";
-                var xmlFilePath = Path.Combine(AppContext.BaseDirectory, xmlFileName);
-                options.IncludeXmlComments(xmlFilePath);
-
-                /// добавл€ем 
-                options.OperationFilter<HeaderOperationFilter>();
-            });
-        });
-        return builder;
-    }
-}

@@ -2,7 +2,7 @@
 using System.Reflection;
 using System.Text;
 
-namespace solution_learn.Configuration.Middlewares
+namespace solution_learn.Infrostructure.Middlewares
 {
     public class RequestLoggingMiddleWare
     {
@@ -36,7 +36,7 @@ namespace solution_learn.Configuration.Middlewares
 
                     context.Request.Body.Position = 0;
                 }
-            } 
+            }
             catch (Exception ex)
             {
                 _logger.LogError(ex, "Could not log request body");
